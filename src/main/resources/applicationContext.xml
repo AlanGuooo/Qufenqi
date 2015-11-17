@@ -1,0 +1,388 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd  
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd  
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd"
+	default-autowire="byName" default-lazy-init="false">
+
+	<!-- 定义占位符所在的文件 -->
+	<context:property-placeholder location="classpath:jdbc.properties" />
+
+	<!-- 定义数据源： -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass" value="com.mysql.jdbc.Driver" />
+		<property name="jdbcUrl" value="jdbc:mysql://127.0.0.1:3306/csms" />
+		<property name="user" value="root" />
+		<property name="password" value="Wall" />
+		<property name="maxPoolSize" value="100"></property>
+		<property name="minPoolSize" value="1" />
+		<property name="initialPoolSize" value="1" />
+		<property name="maxIdleTime" value="30" />
+
+	</bean>
+
+
+
+	<!-- <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean"> 
+		<property name="configLocation" value="classpath:hibernate.cfg.xml"> </property> 
+		</bean> -->
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+
+		<!--配置 Hibernate 相关属性 -->
+		<property name="hibernateProperties">
+			<value>
+				hibernate.dialect=org.hibernate.dialect.MySQL5Dialect
+				hibernate.hbm2ddl.auto=update
+			</value>
+		</property>
+
+		<property name="mappingResources">
+			<list>
+				<value>com/po/GoodsPo.hbm.xml</value>
+				<value>com/po/stockInDetailPo.hbm.xml</value>
+				<value>com/po/WarehousePo.hbm.xml</value>
+				<value>com/po/stockInPo.hbm.xml</value>
+				<value>com/po/StorePo.hbm.xml</value>
+				<value>com/po/stockOutPo.hbm.xml</value>
+				<value>com/po/stockOutDetailPo.hbm.xml</value>
+				<value>com/po/WareHouse.hbm.xml</value>
+				<value>com/yhgl/po/Userpo.hbm.xml</value>
+			</list>
+		</property>
+
+	</bean>
+
+	<!-- <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager"> 
+		<property name="sessionFactory" ref="sessionFactory" /> </bean> -->
+
+	<!-- 定义PO： -->
+	<bean id="stockOutPo" class="com.po.stockOutPo"></bean>
+	<bean id="stockOutDetailPo" class="com.po.stockOutDetailPo"></bean>
+	<bean id="WarehousePo" class="com.po.WarehousePo"></bean>
+	<bean id="stockInPo" class="com.po.stockInPo"></bean>
+	<bean id="stockInDetailPo" class="com.po.stockInDetailPo"></bean>
+	<bean id="GoodsPo" class="com.po.GoodsPo"></bean>
+	<bean id="StorePo" class="com.po.StorePo"></bean>
+	<bean id="wareHouse" class="com.po.WareHouse"></bean>
+
+	<!-- 定义DAO： -->
+	<bean id="stockOutdao" class="com.ckgl.dao.stockOutDaoImpl"
+		lazy-init="true">
+		<property name="stockOutPo" ref="stockOutPo"></property>  <!-- 可以省略？？ -->
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+
+	<bean id="stockOutDetaildao" class="com.ckgl.dao.stockOutDetailDaoImpl"
+		lazy-init="true">
+		<property name="stockOutDetailPo" ref="stockOutDetailPo"></property>  <!-- 可以省略？？ -->
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+
+	<bean id="Warehousedao" class="com.ckgl.dao.WarehouseDaoImpl"
+		lazy-init="true">
+		<property name="warehousePo" ref="WarehousePo"></property>  <!-- 可以省略？？ -->
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<bean id="Storedao" class="com.ckgl.dao.StoreDaoImpl" lazy-init="true">
+		<property name="storePo" ref="StorePo"></property>  <!-- 可以省略？？ -->
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+
+
+	<bean id="stockIndao" class="com.rkgl.dao.stockInDaoImpl"
+		lazy-init="true">
+		<property name="stockInPo" ref="stockInPo"></property>  <!-- 可以省略？？ -->
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+
+
+	<bean id="stockInDetaildao" class="com.rkgl.dao.stockInDetailDaoImpl"
+		lazy-init="true">
+		<property name="stockInDetailPo" ref="stockInDetailPo"></property>  <!-- 可以省略？？ -->
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+
+	<bean id="Goodsdao" class="com.ckgl.dao.GoodsDaoImpl" lazy-init="true">
+		<property name="goodsPo" ref="GoodsPo"></property>  <!-- 可以省略？？ -->
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+
+	<bean id="Goodsdao2" class="com.hhgl.dao.GoodsDaoImpl" lazy-init="true">
+		<property name="goodsPo" ref="GoodsPo"></property>  <!-- 可以省略？？ -->
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+
+	<bean id="wareHouseDao" class="com.ck.dao.WareHouseDaoImpl"
+		lazy-init="true">
+		<property name="wareHouse" ref="wareHouse"></property>
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+
+
+	<!-- 定义业务类： -->
+	<bean id="stockOutservice" class="com.ckgl.service.stockOutServiceImpl">
+		<property name="stockOutPo" ref="stockOutPo"></property>
+		<property name="stockOutDao" ref="stockOutdao"></property>
+	</bean>
+
+	<bean id="stockOutDetailservice" class="com.ckgl.service.stockOutDetailServiceImpl">
+		<property name="stockOutDetailPo" ref="stockOutDetailPo"></property>
+		<property name="stockOutDetailDao" ref="stockOutDetaildao"></property>
+	</bean>
+
+	<bean id="Warehouseservice" class="com.ckgl.service.WarehouseServiceImpl">
+		<property name="warehousePo" ref="WarehousePo"></property>
+		<property name="warehouseDao" ref="Warehousedao"></property>
+	</bean>
+
+
+	<bean id="stockInservice" class="com.rkgl.service.stockInServiceImpl">
+		<property name="stockInPo" ref="stockInPo"></property>
+		<property name="stockInDao" ref="stockIndao"></property>
+	</bean>
+
+
+
+	<bean id="stockInDetailservice" class="com.rkgl.service.stockInDetailServiceImpl">
+		<property name="stockInDetailPo" ref="stockInDetailPo"></property>
+		<property name="stockInDetailDaoInt" ref="stockInDetaildao"></property>
+	</bean>
+
+	<bean id="Storeservice" class="com.ckgl.service.StoreServiceImpl">
+		<property name="storePo" ref="StorePo"></property>
+		<property name="storeDao" ref="Storedao"></property>
+	</bean>
+
+	<bean id="Goodsservice" class="com.ckgl.service.GoodsServiceImpl">
+		<property name="goodsPo" ref="GoodsPo"></property>
+		<property name="goodsDao" ref="Goodsdao"></property>
+	</bean>
+
+	<bean id="Goodsservice2" class="com.hhgl.service.GoodsServiceImpl">
+		<property name="goodsPo" ref="GoodsPo"></property>
+		<property name="goodsDao" ref="Goodsdao2"></property>
+	</bean>
+
+	<!-- 把Service注入DAO -->
+	<bean id="wareHouseService" class="com.ck.service.WareHouseServiceImpl">
+		<property name="wareHouse" ref="wareHouse"></property>
+		<property name="wareHouseDao" ref="wareHouseDao" />
+	</bean>
+
+	<!-- 以下定义各个Action类： -->
+
+
+	<!-- 查询所有入库单 -->
+	<bean id="stockInfindall" class="com.rkgl.action.stockInFindAllAction2">
+		<property name="stockInService" ref="stockInservice"></property>
+	</bean>
+
+	<!-- 新增入库单 -->
+	<bean id="stockInadd" class="com.rkgl.action.stockInAddAction">
+		<property name="stockInService" ref="stockInservice"></property>
+	</bean>
+
+	<!-- 删除入库单 -->
+	<bean id="stockIndelete" class="com.rkgl.action.stockInDeleteAction">
+		<property name="stockInService" ref="stockInservice"></property>
+	</bean>
+
+	<!-- 查找一个入库单 -->
+	<bean id="stockInfindone" class="com.rkgl.action.stockInFindOneAction">
+		<property name="stockInService" ref="stockInservice"></property>
+	</bean>
+
+	<!-- 更新一个入库单 -->
+	<bean id="stockInupdate" class="com.rkgl.action.stockInUpdateAction">
+		<property name="stockInService" ref="stockInservice"></property>
+	</bean>
+
+	<!-- 新增入库单明细 -->
+	<bean id="stockInDetailadd" class="com.rkgl.action.stockInDetailAddAction">
+		<property name="stockInDetailServiceInt" ref="stockInDetailservice"></property>
+	</bean>
+
+	<!-- 删除入库单明细 -->
+	<bean id="stockInDetaildelete" class="com.rkgl.action.stockInDetailDeleteAction">
+		<property name="stockInDetailServiceInt" ref="stockInDetailservice"></property>
+	</bean>
+
+	<!-- 模糊查询入库单 -->
+	<bean id="stockInquery" class="com.rkgl.action.stockInQueryAction"
+		scope="prototype">
+		<property name="stockInService" ref="stockInservice"></property>
+	</bean>
+
+	<!-- 查询所有出库单 -->
+	<bean id="stockOutfindall" class="com.ckgl.action.stockOutFindAllAction">
+		<property name="stockOutService" ref="stockOutservice"></property>
+	</bean>
+
+	<!-- 新增出库单 -->
+	<bean id="stockOutadd" class="com.ckgl.action.stockOutAddAction"
+		scope="prototype">
+		<property name="stockOutService" ref="stockOutservice"></property>
+	</bean>
+
+	<!-- 查询所有仓库信息 -->
+	<bean id="warehousefindall" class="com.ckgl.action.WarehouseFindAllAction">
+		<property name="warehouseService" ref="Warehouseservice"></property>
+	</bean>
+
+	<!-- 删除出库单 -->
+	<bean id="stockOutdelete" class="com.ckgl.action.stockOutDeleteAction">
+		<property name="stockOutService" ref="stockOutservice"></property>
+	</bean>
+
+	<!-- 查找一个出库单 -->
+	<bean id="stockOutfindone" class="com.ckgl.action.stockOutFindOneAction">
+		<property name="stockOutService" ref="stockOutservice"></property>
+	</bean>
+
+	<!-- 更新一个出库单 -->
+	<bean id="stockOutupdate" class="com.ckgl.action.stockOutUpdateAction">
+		<property name="stockOutService" ref="stockOutservice"></property>
+	</bean>
+
+	<!-- 模糊查询出库单 -->
+	<bean id="stockOutquery" class="com.ckgl.action.stockOutQueryAction"
+		scope="prototype">
+		<property name="stockOutService" ref="stockOutservice"></property>
+	</bean>
+
+	<!-- 新增出库单明细 -->
+	<bean id="stockOutDetailadd" class="com.ckgl.action.stockOutDetailAddAction">
+		<property name="stockOutDetailService" ref="stockOutDetailservice"></property>
+	</bean>
+
+	<!-- 查询所有库存表信息 -->
+	<bean id="storefindall" class="com.ckgl.action.StoreFindAllAction">
+		<property name="storeService" ref="Storeservice"></property>
+	</bean>
+
+	<!-- 查询所有货物信息 -->
+	<bean id="goodsfindall2" class="com.ckgl.action.GoodsFindAllAction">
+		<property name="goodsService" ref="Goodsservice"></property>
+	</bean>
+
+	<!-- 删除出库单明细 -->
+	<bean id="stockOutDetaildelete" class="com.ckgl.action.stockOutDetailDeleteAction">
+		<property name="stockOutDetailService" ref="stockOutDetailservice"></property>
+	</bean>
+
+	<!-- 增加仓库 -->
+	<bean id="wareHouseSave" class="com.ck.action.WareHouseSaveAction"
+		scope="prototype">
+		<property name="wareHouseService" ref="wareHouseService"></property>
+	</bean>
+	<!-- 查仓库 -->
+	<bean id="wareHouseFindAll" class="com.ck.action.WareHouseFindAllAction">
+		<property name="wareHouseService" ref="wareHouseService"></property>
+	</bean>
+
+	<!-- 删除仓库 -->
+	<bean id="wareHouseDelete" class="com.ck.action.WareHouseDeleteAction">
+		<property name="wareHouseService" ref="wareHouseService"></property>
+	</bean>
+
+	<!-- 查一个仓库 -->
+	<bean id="wareHouseFindOne" class="com.ck.action.WareHouseFindOneAction">
+		<property name="wareHouseService" ref="wareHouseService"></property>
+	</bean>
+
+	<!-- 更新仓库 -->
+	<bean id="wareHouseUpdate" class="com.ck.action.WareHouseUpdateAction"
+		scope="prototype">
+		<property name="wareHouseService" ref="wareHouseService"></property>
+	</bean>
+
+	<!-- 模糊查询 -->
+	<bean id="Query1" class="com.ck.action.WareHouseQueryAction">
+		<property name="wareHouseService" ref="wareHouseService"></property>
+	</bean>
+
+
+	<!-- 用户管理 -->
+
+	<!-- 定义DAO： -->
+	<bean id="Userpo" class="com.yhgl.po.Userpo"></bean>
+	<bean id="UserDaoImpl" class="com.yhgl.dao.UserDaoImpl">
+		<property name="userpo" ref="Userpo"></property>
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<!-- 定义业务类： -->
+	<bean id="userservice" class="com.yhgl.service.UserServiceImpl">
+		<property name="userpo" ref="Userpo"></property>
+		<property name="userdao" ref="UserDaoImpl"></property>
+	</bean>
+
+	<!-- 新建用户 -->
+	<bean id="adduser" class="com.yhgl.action.Adduseraction">
+		<property name="userService" ref="userservice"></property>
+	</bean>
+
+	<!-- 删除用户 -->
+
+	<bean id="deleteuser" class="com.yhgl.action.Deleteuseraction">
+		<property name="userService" ref="userservice"></property>
+	</bean>
+
+	<!-- 查询全包用户 -->
+
+	<bean id="findalluser" class="com.yhgl.action.Findalluseraction">
+		<property name="userService" ref="userservice"></property>
+	</bean>
+
+	<!-- 查询一个用户 -->
+
+	<bean id="findoneuser" class="com.yhgl.action.Findoneuseraction">
+		<property name="userService" ref="userservice"></property>
+	</bean>
+	<!-- 更新用户信息 -->
+	<bean id="updateuser" class="com.yhgl.action.Updateuseraction">
+		<property name="userService" ref="userservice"></property>
+	</bean>
+	<!-- 用户登录 -->
+	<bean id="userlogin" class="com.yhgl.action.Userloginaction"
+		scope="prototype">
+		<property name="userService" ref="userservice"></property>
+		<!-- <property name="userpo" ref="Userpo"></property> -->
+	</bean>
+
+	<!-- 查询所有货号 -->
+	<bean id="goodsfindall" class="com.hhgl.action.GoodsFindAllAction">
+		<property name="goodsService" ref="Goodsservice2"></property>
+	</bean>
+
+	<!-- 新增货号 -->
+	<bean id="goodsadd" class="com.hhgl.action.GoodsAddAction" scope="prototype">
+		<property name="goodsService" ref="Goodsservice2"></property>
+	</bean>
+
+	<!-- 删除货号 -->
+	<bean id="goodsdelete" class="com.hhgl.action.GoodsDeleteAction">
+		<property name="goodsService" ref="Goodsservice2"></property>
+	</bean>
+
+	<!-- 查找一个货号 -->
+	<bean id="goodsfindone" class="com.hhgl.action.GoodsFindOneAction">
+		<property name="goodsService" ref="Goodsservice2"></property>
+	</bean>
+
+	<!-- 更新一个货号 -->
+	<bean id="goodsupdate" class="com.hhgl.action.GoodsUpdateAction">
+		<property name="goodsService" ref="Goodsservice2"></property>
+
+		<!-- 模糊查询货号 -->
+	</bean>
+	<bean id="goodsquery" class="com.hhgl.action.GoodsQueryAction"
+		scope="prototype">
+		<property name="goodsService" ref="Goodsservice2"></property>
+	</bean>
+</beans>
